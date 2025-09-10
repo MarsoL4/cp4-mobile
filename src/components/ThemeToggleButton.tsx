@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    marginTop: 20
+    marginTop: 20,
   },
-  text: { fontSize: 16, fontWeight: "bold" }
+  text: { fontSize: 16, fontWeight: "bold" },
 });

@@ -4,6 +4,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Theme = "light" | "dark";
 
+type ThemeContextType = {
+  theme: Theme;
+  toggleTheme: () => void;
+  colors: {
+    background: string;
+    text: string;
+    button: string;
+    buttonText: string;
+  };
+};
+
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function useTheme() {
@@ -14,17 +25,17 @@ export function useTheme() {
 
 const themeColors = {
   light: {
-    background: "#fff",
-    text: "#000",
+    background: "#ffffff",
+    text: "#000000",
     button: "#007bff",
-    buttonText: "#fff"
+    buttonText: "#ffffff",
   },
   dark: {
-    background: "#000",
-    text: "#fff",
-    button: "#0bf359ff",
-    buttonText: "#000"
-  }
+    background: "#121212",
+    text: "#ffffff",
+    button: "#0bf359",
+    buttonText: "#000000",
+  },
 };
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -32,18 +43,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     (async () => {
-      const stored = await AsyncStorage.getItem("@theme");
-      if (stored) {
-        setTheme(stored as Theme);
-      } else {
-        const sysColorScheme = Appearance.getColorScheme() as Theme;
-        setTheme(sysColorScheme || "light");
+      try {
+        const stored = await AsyncStorage.getItem("@theme");
+        if (stored === "light" || stored === "dark") setTheme(stored as Theme);
+        else setTheme((Appearance.getColorScheme() as Theme) || "light");
+      } catch (e) {
+        setTheme("light");
       }
     })();
   }, []);
 
   const toggleTheme = async () => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme: Theme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     await AsyncStorage.setItem("@theme", newTheme);
   };

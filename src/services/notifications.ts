@@ -14,9 +14,12 @@ export async function askNotificationPermission() {
   return false;
 }
 
-export async function scheduleTaskNotification(title: string, body: string, date: Date) {
+export async function scheduleTaskNotification(title: string, date: Date) {
   await Notifications.scheduleNotificationAsync({
-    content: { title, body },
-    trigger: date
+    content: {
+      title: "Lembrete de tarefa",
+      body: title,
+    },
+    trigger: { date, channelId: "default" },
   });
 }

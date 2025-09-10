@@ -5,6 +5,20 @@
     "confirmDelete":"Are you sure you want to delete your account?",
     "cancel":"Cancel",
     "delete":"Delete",
-    "login":"Log-in",
-    "password":"Password"
+    "login":"Login",
+    "login_email":"Entrar com E-mail",
+    "login_google":"Entrar com Google",
+    "no_account":"Não tem conta? Cadastre-se",
+    "email":"Email",
+    "password":"Senha",
+    "register":"Cadastro",
+    "name":"Nome",
+    "my_tasks":"Minhas Tarefas",
+    "description":"Descrição",
+    "due_date":"Data de entrega",
+    "completed":"Concluída",
+    "pending":"Pendente",
+    "edit":"Editar",
+    "save":"Salvar",
+    "motivation":"Motivacional"
 }

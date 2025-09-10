@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, Alert } from "react-native";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { doc, updateDoc, deleteDoc } from "../services/firebaseConfig";
+import { doc, updateDoc, deleteDoc, db } from "../services/firebaseConfig";
 import { useTheme } from "../context/ThemeContext";
 
 type Props = {
@@ -17,7 +17,11 @@ export default function TaskItem({ id, name, isChecked: checkedInit, onDelete }:
 
   useEffect(() => {
     const updateIsChecked = async () => {
-      await updateDoc(doc("tasks", id), { isChecked });
+      try {
+        await updateDoc(doc(db, "tasks", id), { isChecked });
+      } catch (e) {
+        console.log("Erro ao atualizar tarefa:", e);
+      }
     };
     updateIsChecked();
   }, [isChecked, id]);
@@ -25,7 +29,7 @@ export default function TaskItem({ id, name, isChecked: checkedInit, onDelete }:
   const deleteItem = async () => {
     Alert.alert("Excluir Tarefa?", "Confirma exclusão?", [
       { text: "Cancelar" },
-      { text: "Excluir", onPress: async () => { await deleteDoc(doc("tasks", id)); onDelete?.(); } }
+      { text: "Excluir", onPress: async () => { await deleteDoc(doc(db, "tasks", id)); onDelete?.(); } }
     ]);
   };
 

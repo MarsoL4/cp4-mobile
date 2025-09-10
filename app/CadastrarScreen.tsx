@@ -1,115 +1,88 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import {auth} from '../src/services/firebaseConfig'
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from "react";
+import { View, Alert } from "react-native";
+import { TextInput, Button, Text, useTheme } from "react-native-paper";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { app } from "../src/services/firebaseConfig";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "expo-router";
 
-export default function CadastroScreen() {
-  // Estados para armazenar os valores digitados
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+export default function CadastrarScreen() {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
 
-  const router = useRouter()//Hook para navegação
+  const { t, i18n } = useTranslation();
+  const { colors } = useTheme();
+  const router = useRouter();
 
-  // Função para simular o envio do formulário
-  const handleCadastro = () => {
+  const handleCadastro = async () => {
     if (!nome || !email || !senha) {
-      Alert.alert('Atenção', 'Preencha todos os campos!');
+      Alert.alert(t("attention"), t("fill_all_fields"));
       return;
     }
-    createUserWithEmailAndPassword(auth,email,senha)
-      .then(async(userCredential)=>{
-        const user = userCredential.user
-        await AsyncStorage.setItem('@user',JSON.stringify(user))
-        
-        router.push('/HomeScreen')
-        //console.log(user)
-      })
-      .catch((error)=>{
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.log(errorMessage)
-      })
+
+    if (senha.length < 6) {
+      Alert.alert(t("attention"), t("password_min_length"));
+      return;
+    }
+
+    try {
+      const auth = getAuth(app);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+
+      if (auth.currentUser) {
+        await updateProfile(auth.currentUser, { displayName: nome });
+      }
+
+      Alert.alert(t("success"), t("register_success"));
+      router.replace("/"); // tela de login é index.tsx
+    } catch (error: any) {
+      Alert.alert(t("error"), error.message || String(error));
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Criar Conta</Text>
+    <View style={{ flex: 1, justifyContent: "center", padding: 24, backgroundColor: colors.background }}>
+      <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 16 }}>
+        <Button mode="outlined" style={{ marginRight: 8 }} onPress={() => i18n.changeLanguage("pt")}>PT</Button>
+        <Button mode="outlined" onPress={() => i18n.changeLanguage("en")}>EN</Button>
+      </View>
 
-      {/* Campo Nome */}
+      <Text style={{ fontSize: 28, textAlign: "center", marginBottom: 24, color: colors.text }}>
+        {t("register")}
+      </Text>
+
       <TextInput
-        style={styles.input}
-        placeholder="Nome completo"
-        placeholderTextColor="#aaa"
+        label={t("name")}
         value={nome}
         onChangeText={setNome}
+        style={{ marginBottom: 16 }}
+        mode="outlined"
       />
-
-      {/* Campo Email */}
       <TextInput
-        style={styles.input}
-        placeholder="E-mail"
-        placeholderTextColor="#aaa"
-        keyboardType="email-address"
-        autoCapitalize="none"
+        label={t("email")}
         value={email}
         onChangeText={setEmail}
+        style={{ marginBottom: 16 }}
+        mode="outlined"
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
-
-      {/* Campo Senha */}
       <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        placeholderTextColor="#aaa"
-        secureTextEntry
+        label={t("password")}
         value={senha}
         onChangeText={setSenha}
+        style={{ marginBottom: 16 }}
+        mode="outlined"
+        secureTextEntry
       />
 
-      {/* Botão */}
-      <TouchableOpacity style={styles.botao} onPress={handleCadastro}>
-        <Text style={styles.textoBotao}>Cadastrar</Text>
-      </TouchableOpacity>
+      <Button mode="contained" onPress={handleCadastro} style={{ marginBottom: 8 }}>
+        {t("register")}
+      </Button>
+      <Button mode="text" onPress={() => router.replace("/")}>
+        {t("back_to_login")}
+      </Button>
     </View>
   );
 }
-
-// Estilização
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  titulo: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 30,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: '#1E1E1E',
-    color: '#fff',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#333',
-  },
-  botao: {
-    backgroundColor: '#00B37E',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  textoBotao: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
