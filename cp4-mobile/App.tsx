@@ -1,20 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Provider as PaperProvider } from 'react-native-paper';
+import AppNavigator from './src/navigation/AppNavigator';
+import './src/i18n'; // importa e inicializa o i18n
+import { LightTheme, CustomDarkTheme } from './src/theme/theme';
+import { useThemeMode } from './src/hooks/useThemeMode';
 
 export default function App() {
+  const { isDark } = useThemeMode();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider theme={isDark ? CustomDarkTheme : LightTheme}>
+      <AppNavigator />
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
