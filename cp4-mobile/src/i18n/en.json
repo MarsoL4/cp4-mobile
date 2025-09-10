@@ -1,0 +1,11 @@
+{
+  "welcome": "Welcome",
+  "login": "Login",
+  "logout": "Logout",
+  "tasks": "Tasks",
+  "addTask": "Add Task",
+  "editTask": "Edit Task",
+  "deleteTask": "Delete Task",
+  "changeTheme": "Change Theme",
+  "changeLanguage": "Change Language"
+}

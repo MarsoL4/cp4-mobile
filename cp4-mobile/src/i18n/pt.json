@@ -1,0 +1,11 @@
+{
+  "welcome": "Bem-vindo",
+  "login": "Entrar",
+  "logout": "Sair",
+  "tasks": "Tarefas",
+  "addTask": "Adicionar Tarefa",
+  "editTask": "Editar Tarefa",
+  "deleteTask": "Excluir Tarefa",
+  "changeTheme": "Trocar Tema",
+  "changeLanguage": "Trocar Idioma"
+}

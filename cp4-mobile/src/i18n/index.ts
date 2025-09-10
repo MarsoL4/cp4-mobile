@@ -6,8 +6,7 @@ import en from './en.json';
 import pt from './pt.json';
 
 i18n.use(initReactI18next).init({
-  compatibilityJSON: 'v3',
-  lng: Localization.locale.startsWith('pt') ? 'pt' : 'en',
+  lng: Localization.getLocales()[0]?.languageCode?.startsWith('pt') ? 'pt' : 'en',
   fallbackLng: 'en',
   resources: {
     en: { translation: en },
