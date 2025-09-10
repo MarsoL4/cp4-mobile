@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "cp4-mobile",
-    "slug": "cp4-mobile",
+    "name": "AulaAuth",
+    "slug": "AulaAuth",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "scheme": "AulaAuth",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -26,7 +27,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-localization"
+      "expo-router"
     ]
   }
 }
