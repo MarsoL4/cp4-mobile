@@ -1,23 +1,23 @@
-import { DefaultTheme, DarkTheme, Theme } from 'react-native-paper';
+import { MD3LightTheme as DefaultTheme, MD3DarkTheme, MD3Theme } from 'react-native-paper';
 
-export const LightTheme: Theme = {
+export const LightTheme: MD3Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     primary: '#1976D2',
-    accent: '#FFC107',
+    secondary: '#FFC107',
     background: '#fff',
-    text: '#000',
+    onBackground: '#000',
   },
 };
 
-export const CustomDarkTheme: Theme = {
-  ...DarkTheme,
+export const CustomDarkTheme: MD3Theme = {
+  ...MD3DarkTheme,
   colors: {
-    ...DarkTheme.colors,
+    ...MD3DarkTheme.colors,
     primary: '#1976D2',
-    accent: '#FFC107',
+    secondary: '#FFC107',
     background: '#121212',
-    text: '#fff',
+    onBackground: '#fff',
   },
 };
