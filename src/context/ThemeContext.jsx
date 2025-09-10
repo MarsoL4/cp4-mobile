@@ -1,48 +1,56 @@
-//Contexto será responsável pelo gerenciamento do tema (dark e light)
-import React,{createContext,useContext,useEffect,useState} from "react";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Appearance } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-//Criação do contexto
-const ThemeContext = createContext()
+type Theme = "light" | "dark";
 
-//Hook customizado para acessar o tema
-export function useTheme(){
-    return useContext(ThemeContext)
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export function useTheme() {
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+  return ctx;
 }
 
-//Provider que envolve todo a aplicação
-export function ThemeProvider({children}){
-    //Detecta o tema inicial do dispositivo
-    const colorScheme = Appearance.getColorScheme()
+const themeColors = {
+  light: {
+    background: "#fff",
+    text: "#000",
+    button: "#007bff",
+    buttonText: "#fff"
+  },
+  dark: {
+    background: "#000",
+    text: "#fff",
+    button: "#0bf359ff",
+    buttonText: "#000"
+  }
+};
 
-    //Estado para armazenar o tema (light ou dark)
-    const[theme,setTheme] = useState(colorScheme || 'light')
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>("light");
 
-    //Função para alternar entre os temas
-    const toggleTheme = ()=>{
-        setTheme((value)=>value==='light'?'dark':'light')
-    }
+  useEffect(() => {
+    (async () => {
+      const stored = await AsyncStorage.getItem("@theme");
+      if (stored) {
+        setTheme(stored as Theme);
+      } else {
+        const sysColorScheme = Appearance.getColorScheme() as Theme;
+        setTheme(sysColorScheme || "light");
+      }
+    })();
+  }, []);
 
-    //Definicação cores de temas
-    const themeColors = {
-        light:{
-            background:'#fff',
-            text:'#000',
-            button:'#007bff',
-            buttonText:'#fff'
-        },
-        dark:{
-            background:'#000',
-            text:'#fff',
-            button:'#0bf359ff',
-            buttonText:'#000'
-        }
-    }
-  
-    return(
-        <ThemeContext.Provider value={{toggleTheme,colors:themeColors[theme]}}>
-            {children}
-        </ThemeContext.Provider>
-    )
+  const toggleTheme = async () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    await AsyncStorage.setItem("@theme", newTheme);
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme, colors: themeColors[theme] }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
-
